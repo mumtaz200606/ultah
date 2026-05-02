@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD </title>
+    <style>
+        :root {
+            /* Warna pink gradasi yang lebih soft dan cantik */
+            --bg-gradient: linear-gradient(135deg, #fce4ec 0%, #E89EB8 100%);
+            --accent-color: #7d1d1d;
+            --text-color: #2d3436;
+            --white: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            font-family: 'Poppins', 'Georgia', serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* --- ANIMASI AMPLOP --- */
+        #envelope-wrapper {
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        #envelope-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope {
+            background: var(--accent-color);
+            height: 180px;
+            width: 280px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 100px solid #a42a2a;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top;
+            z-index: 2;
+        }
+
+        .open::before {
+            transform: rotateX(180deg);
+        }
+
+        /* --- KONTEN UTAMA --- */
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        /* Animasi Mengapung (Floating) pada Polaroid */
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(-2deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(1deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(-2deg);
+            }
+        }
+
+        .polaroid-frame {
+            background: white;
+            padding: 15px 15px 60px 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            position: relative;
+            margin: 20px auto;
+            width: 280px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .photo-display {
+            width: 280px;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #f0f0f0;
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .slides img {
+            width: 280px;
+            height: 300px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.5s;
+        }
+
+        .slides img:hover {
+            transform: scale(1.05);
+            /* Efek zoom tipis saat kursor di atas foto */
+        }
+
+        /* Navigasi Button */
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #a42a2a;
+            transform: translateY(-2px);
+        }
+
+        /* Surat dengan Efek Glow */
+        .letter-box {
+            background: var(--white);
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 20px;
+            text-align: left;
+            line-height: 1.8;
+            box-shadow: 0 10px 30px rgba(232, 158, 184, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        #typing-text {
+            font-size: 0.95rem;
+            min-height: 100px;
+            color: #444;
+        }
+
+        /* EFEK LOVE TERBANG */
+        .heart-particle {
+            position: fixed;
+            bottom: -20px;
+            font-size: 20px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            animation: moveUp 4s linear forwards;
+        }
+
+        @keyframes moveUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-110vh) rotate(360deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="mySong" src="view.mp3" preload="auto"></audio>
+
+    <div class="container">
+        <!-- Amplop -->
+        <div id="envelope-wrapper" onclick="openSurprise()">
+            <div class="envelope" id="env">
+                <div
+                    style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); color:#ff4d4d; font-size:2.5rem; z-index:3; filter: drop-shadow(0 0 10px rgba(255,0,0,0.5));">
+                    ❤</div>
+            </div>
+            <p style="margin-top:25px; font-weight: bold; color: #7d1d1d; letter-spacing: 1px;">KO TEKAN EE NIA RAMADANI
+            </p>
+        </div>
+
+        <!-- Konten Utama -->
+        <div id="main-content">
+            <div class="polaroid-frame">
+                <div class="photo-display">
+                    <div class="slides" id="slidesTrack">
+                        <!-- Foto-foto kamu -->
+                        <img src="bayi.jpeg" alt="Kenangan 1">
+                        <img src="kecil.jpeg" alt="Kenangan 2">
+                        <img src="niah.jpeg" alt="Kenangan 3">
+                        <img src="foto.jpeg" alt="Kenangan 4">
+                        <img src="imut.jpeg" alt="Kenangan 5">
+                        <img src="lucu.jpeg" alt="Kenangan 6">
+                    </div>
+                </div>
+                <div style="color:#555; margin-top:20px; font-style:italic; font-weight:bold; font-size: 0.9rem;">
+                    "FOTO DARI BAYI - TUA..."
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="changeSlide(-1)">❮</button>
+                <div id="slideNum" style="font-weight: bold; color: #7d1d1d;">1 / 6</div>
+                <button class="btn" onclick="changeSlide(1)">❯</button>
+            </div>
+
+            <div class="letter-box">
+                <h3
+                    style="color:#7d1d1d; text-align:center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    15/05/2008</h3>
+                <div id="typing-text"></div>
+                <p style="text-align:right; font-style:italic; margin-top: 20px; color: #888;">— Falahuunn
+
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ucapan = "Selamat ulang tahunnnn nia ramadani yang ke 18 tahunn, semoga panjang umur sehat selalu rejeki mu di lancarkan, segala urusan mu semoga tuhan kasi lancar. semoga semua yang ko mau di tahun ini tercapai aminnnn, semogaa ko bahagia selalu yaahhhxhh, sa di sini hanya bisaa liatt ko. semoga ko di kelilingi orang orang baik di sana yang baru ko kenal dan semangatt eee nnt ospek nya sampe kuliah juga harus semangat ko harus jalani kuliah mu demi ortu muu okokeeee. dan maaff ee kalo sa bikin ko sedih sama perkataan 2 ku maaf sekali semoga ko bisa dapat yang lebih baik di banding saa, sekali lagi SELAMAT ULANG TAHUN SEMOGA PANJANG UMUR SEHAT SENTOSA REJEKI DI LANCARKANNNNNNNN AMINNN 🥰🫡🩶🩶";
+
+        let currentIndex = 0;
+        let charIdx = 0;
+        const slides = document.getElementById('slidesTrack');
+        const totalPhotos = slides.getElementsByTagName('img').length;
+
+        // Fungsi membuat love warna-warni (pink & merah)
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.color = Math.random() > 0.5 ? '#ff4d4d' : '#ff85a2';
+            heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => { heart.remove(); }, 4000);
+        }
+
+        function openSurprise() {
+            document.getElementById('mySong').play();
+            document.getElementById('env').classList.add('open');
+
+            // Partikel Love lebih banyak pas di awal
+            for (let i = 0; i < 15; i++) {
+                setTimeout(createHeart, i * 100);
+            }
+
+            setInterval(createHeart, 400);
+
+            setTimeout(() => {
+                document.getElementById('envelope-wrapper').style.transform = 'scale(0)';
+                setTimeout(() => {
+                    document.getElementById('envelope-wrapper').style.display = 'none';
+                    const content = document.getElementById('main-content');
+                    content.style.display = 'block';
+                    setTimeout(() => {
+                        content.style.opacity = '1';
+                        typeWriter();
+                    }, 100);
+                }, 400);
+            }, 800);
+        }
+
+        function changeSlide(direction) {
+            currentIndex += direction;
+            if (currentIndex >= totalPhotos) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = totalPhotos - 1;
+
+            const offset = currentIndex * -280;
+            slides.style.transform = `translateX(${offset}px)`;
+            document.getElementById('slideNum').innerText = `${currentIndex + 1} / ${totalPhotos}`;
+        }
+
+        function typeWriter() {
+            if (charIdx < ucapan.length) {
+                document.getElementById("typing-text").innerHTML += ucapan.charAt(charIdx);
+                charIdx++;
+                // Kecepatan ngetik dibuat sedikit variasi biar alami
+                let speed = 40;
+                if (ucapan.charAt(charIdx - 1) === ',') speed = 200;
+                if (ucapan.charAt(charIdx - 1) === '.') speed = 400;
+
+                setTimeout(typeWriter, speed);
+            }
+        }
+    </script>
+</body>
+
+</html>
